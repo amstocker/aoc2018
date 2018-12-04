@@ -79,6 +79,7 @@ class Guard:
     def __init__(self, guard_id, shifts=None):
         self.id = guard_id
         self.shifts = []
+        self.totals = None
         if shifts:
             for s in shifts:
                 self.add_shift(s)
@@ -86,13 +87,14 @@ class Guard:
     def add_shift(self, shift):
         self.shifts.append(shift)
         self.shifts = sorted(self.shifts, key=lambda s: s.start.time)
+        self.totals = [sum(s.minutes[m] for s in self.shifts) for m in range(60)]
 
     def total_asleep(self):
         return sum(s.total_asleep() for s in self.shifts)
 
     def likely_minute(self):
-        totals = [sum(s.minutes[m] for s in self.shifts) for m in range(60)]
-        return totals.index(max(totals))
+        freq = max(self.totals)
+        return self.totals.index(freq), freq
 
     def __str__(self):
         return "Guard(id={}, [{} shifts])".format(self.id, len(self.shifts))
@@ -110,7 +112,12 @@ with open("day4_input.txt") as f:
         else:
             g = guards[s.start.data]
         g.add_shift(s)
-    
-    sleepiest = sorted(guards.values(), key=lambda g: g.total_asleep())[-1]
+   
+    # part 1
+    g1 = sorted(guards.values(), key=lambda g: g.total_asleep())[-1]
+    print(g1.id * g1.likely_minute()[0])
 
-    print(sleepiest.id * sleepiest.likely_minute())
+    # part 2
+    g2 = sorted(guards.values(), key=lambda g: g.likely_minute()[1])[-1]
+    print(g2.id * g2.likely_minute()[0])
+
