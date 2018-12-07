@@ -1,18 +1,17 @@
-import math
 from collections import defaultdict
 
 
 EQUIDISTANT = "EQUIDISTANT"
 
 def mdist(p1, p2):
-    return math.fabs(p2[0]-p1[0]) + math.fabs(p2[1]-p1[1])
+    return abs(p2[0]-p1[0]) + abs(p2[1]-p1[1])
 
 def get_min(c, points):
     dists = sorted(enumerate(map(lambda p: int(mdist(p, c)), points)),
                    key=lambda t: t[1])
     if dists[0][1] == dists[1][1]:
-        return EQUIDISTANT, dists[0][1]
-    return points[dists[0][0]], dists[0][1]
+        return EQUIDISTANT
+    return points[dists[0][0]]
 
 def get_boundary(points):
     xr = sorted(points, key=lambda p: p[0])
@@ -34,7 +33,7 @@ def finite_points(points, b):
     # Idea is that on the bounding square any point that is
     # the minimal distance will also be the minimal distance
     # for an infinity of points away from the bounding square.
-    infinites = set(get_min(c, points)[0] for c in iter_boundary(b))
+    infinites = set(get_min(c, points) for c in iter_boundary(b))
     return set(p for p in points if p not in infinites)
 
 
@@ -46,7 +45,7 @@ with open("day6_input.txt") as f:
     areas = defaultdict(int)
     finites = finite_points(points, boundary)
     for x, y in iter_interior(boundary):
-        closest = get_min((x, y), points)[0]
+        closest = get_min((x, y), points)
         if closest in finites and \
            closest != EQUIDISTANT:
             areas[closest] += 1
@@ -54,8 +53,7 @@ with open("day6_input.txt") as f:
 
     # part 2
     area = 0
-    assert(10000//len(points) < \
-            min(boundary[1]-boundary[0], boundary[3]-boundary[2]))
+    assert(10000 < (boundary[1]-boundary[0])*(boundary[3]-boundary[2]))
     for x, y in iter_interior(boundary):
         if sum(mdist((x, y), p) for p in points) < 10000:
             area += 1
