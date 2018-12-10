@@ -1,13 +1,13 @@
-def get_metadata(data):
+def get_metadata_sum(data):
     def helper(data, i):
         n_children = data[i]
         n_metadata = data[i+1]
-        metadata = []
+        metadata = 0
         i += 2
         for n in range(n_children):
             child_metadata, i = helper(data, i)
-            metadata.extend(child_metadata)
-        metadata.extend(data[i:i+n_metadata])
+            metadata += child_metadata
+        metadata += sum(data[i:i+n_metadata])
         i += n_metadata
         return metadata, i
     return helper(data, 0)[0]
@@ -33,5 +33,5 @@ def get_root_value(data):
 
 with open("day8_input.txt") as f:
     data = list(map(int, f.read().rstrip().split()))
-    print(sum(get_metadata(data)))
+    print(get_metadata_sum(data))
     print(get_root_value(data))
