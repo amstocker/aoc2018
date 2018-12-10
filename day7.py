@@ -62,7 +62,8 @@ def process_line(line):
     parts = line.split()
     return Arrow(parts[1], parts[7])
 
-def make_dag(arrows):
+def make_dag(_arrows):
+    arrows = deepcopy(_arrows)
     a = arrows.pop(0)
     src = Node(a.src_label)
     trg = Node(a.trg_label)
@@ -111,14 +112,14 @@ with open("day7_input.txt") as f:
     arrows = list(map(process_line, f.read().rstrip().split('\n')))
     
     # part 1
-    nodes = make_dag(deepcopy(arrows))
+    nodes = make_dag(arrows)
     completed = []
     while len(nodes) > 0:
         completed.append(consume_ready_task(nodes))
     print(''.join(completed))
 
     # part 2
-    nodes = make_dag(deepcopy(arrows))
+    nodes = make_dag(arrows)
     in_progress = set()
     workers = [Worker(i) for i in range(5)]
     def on_complete(w):
