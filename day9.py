@@ -1,14 +1,12 @@
-
-
-class Node:
-    def __init__(self, n):
-        self.n = n
+class Marble:
+    def __init__(self, value):
+        self.value = value
         self.next = None
         self.prev = None
 
 class Circle:
     def __init__(self):
-        self.zero = Node(0)
+        self.zero = Marble(0)
         self.zero.prev = self.zero
         self.zero.next = self.zero
         self.cur = self.zero
@@ -16,21 +14,21 @@ class Circle:
     def insert_cur(self, n):
         cur_prev = self.cur.prev
         cur_next = self.cur
-        self.cur = Node(n)
+        self.cur = Marble(n)
         cur_prev.next = self.cur
         cur_next.prev = self.cur
         self.cur.prev = cur_prev
         self.cur.next = cur_next
 
     def remove_cur(self):
-        tmp = self.cur.n
+        value = self.cur.value
         cur_prev = self.cur.prev
         cur_next = self.cur.next
         cur_prev.next = cur_next
         cur_next.prev = cur_prev
         del self.cur
         self.cur = cur_next
-        return tmp
+        return value
 
     def move_forward(self, t=1):
         for i in range(t):
@@ -41,10 +39,10 @@ class Circle:
             self.cur = self.cur.prev
 
     def listify(self):
-        circle = [self.zero.n]
+        circle = [self.zero.value]
         cur = self.zero.next
         while cur != self.zero:
-            circle.append(cur.n)
+            circle.append(cur.value)
             cur = cur.next
         return circle
 
@@ -86,17 +84,3 @@ if __name__ == "__main__":
     g = Game(n_players, n_marbles)
     g.play()
     print("part 2: {}".format(max(g.scores)))
-
-
-
-
-
-
-
-
-
-
-
-
-
-
