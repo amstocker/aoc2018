@@ -15,3 +15,6 @@ with open("day1_input.txt") as f:
     l = map(int, f.read().split())
     print(sum(l))
     twice(l)
+
+
+print("hello")
